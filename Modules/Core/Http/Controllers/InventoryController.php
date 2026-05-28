@@ -34,9 +34,9 @@ class InventoryController extends Controller
             $query->whereColumn('qty', '<=', 'min_qty')->where('min_qty', '>', 0);
         }
 
-        $inventory = $query->paginate(20)->withQueryString();
+        $inventories = $query->paginate(20)->withQueryString();
 
-        return view('core::inventory.index', compact('inventory', 'outlets'));
+        return view('core::inventory.index', compact('inventories', 'outlets'));
     }
 
     public function adjust(Inventory $inventory): View
@@ -48,16 +48,35 @@ class InventoryController extends Controller
     public function update(Request $request, Inventory $inventory): RedirectResponse
     {
         $request->validate([
-            'new_qty' => 'required|numeric|min:0',
+            'type'    => 'required|in:adjust,in,out',
+            'qty'     => 'required|numeric|min:0',
+            'min_qty' => 'nullable|numeric|min:0',
             'note'    => 'nullable|string|max:500',
         ]);
 
         try {
-            $this->stockService->adjust(
-                $inventory->id,
-                (float) $request->new_qty,
-                $request->note ?? 'Penyesuaian stok manual'
-            );
+            $qty  = (float) $request->qty;
+            $note = $request->note ?? 'Penyesuaian stok manual';
+
+            match ($request->type) {
+                'adjust' => $this->stockService->adjust($inventory->id, $qty, $note),
+                'in'     => $this->stockService->add(
+                                $inventory->product_variant_id,
+                                $inventory->outlet_id,
+                                $qty,
+                                ['ref_type' => 'manual', 'note' => $note]
+                            ),
+                'out'    => $this->stockService->deduct(
+                                $inventory->product_variant_id,
+                                $inventory->outlet_id,
+                                $qty,
+                                ['ref_type' => 'manual', 'note' => $note]
+                            ),
+            };
+
+            if ($request->filled('min_qty')) {
+                $inventory->update(['min_qty' => (float) $request->min_qty]);
+            }
 
             return redirect()->route('inventory.index')
                 ->with('success', 'Stok berhasil disesuaikan.');

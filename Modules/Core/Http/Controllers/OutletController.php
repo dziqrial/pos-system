@@ -28,17 +28,15 @@ class OutletController extends Controller
     {
         $request->validate([
             'name'    => ['required', 'string', 'max:255'],
-            'code'    => ['required', 'string', 'max:50'],
             'address' => ['nullable', 'string'],
             'phone'   => ['nullable', 'string', 'max:20'],
         ]);
 
         Outlet::create([
-            'store_id' => auth()->user()->store_id,
-            'name'     => $request->name,
-            'code'     => $request->code,
-            'address'  => $request->address,
-            'phone'    => $request->phone,
+            'store_id'  => auth()->user()->store_id,
+            'name'      => $request->name,
+            'address'   => $request->address,
+            'phone'     => $request->phone,
             'is_active' => true,
         ]);
 
@@ -55,14 +53,12 @@ class OutletController extends Controller
     {
         $request->validate([
             'name'    => ['required', 'string', 'max:255'],
-            'code'    => ['required', 'string', 'max:50'],
             'address' => ['nullable', 'string'],
             'phone'   => ['nullable', 'string', 'max:20'],
         ]);
 
         $outlet->update([
             'name'    => $request->name,
-            'code'    => $request->code,
             'address' => $request->address,
             'phone'   => $request->phone,
         ]);

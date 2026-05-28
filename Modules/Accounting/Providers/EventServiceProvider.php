@@ -3,13 +3,14 @@
 namespace Modules\Accounting\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\Accounting\Listeners\CreateJournalEntry;
 use Modules\Core\Events\TransactionCompleted;
-use Modules\Core\Events\TransactionVoided;
 
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        TransactionCompleted::class => [],
-        TransactionVoided::class    => [],
+        TransactionCompleted::class => [
+            CreateJournalEntry::class,
+        ],
     ];
 }

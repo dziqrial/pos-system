@@ -14,16 +14,16 @@ class Customer extends Model
         'name',
         'phone',
         'email',
-        'address',
         'birth_date',
-        'total_points',
-        'is_active',
+        'tier',
+        'total_spend',
+        'points_balance',
     ];
 
     protected $casts = [
-        'birth_date'   => 'date',
-        'is_active'    => 'boolean',
-        'total_points' => 'integer',
+        'birth_date'     => 'date',
+        'total_spend'    => 'float',
+        'points_balance' => 'integer',
     ];
 
     public function loyaltyPoints()

@@ -12,8 +12,9 @@ class LoyaltyPoint extends Model
         'customer_id',
         'transaction_id',
         'type',
-        'points',
-        'balance_after',
+        'delta',
+        'balance',
+        'expired_at',
         'note',
         'created_at',
     ];

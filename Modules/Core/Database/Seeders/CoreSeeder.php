@@ -19,7 +19,6 @@ class CoreSeeder extends Seeder
         DB::table('outlets')->insert([
             'store_id'   => $storeId,
             'name'       => 'Outlet Utama',
-            'code'       => 'OUT-001',
             'address'    => null,
             'phone'      => null,
             'is_active'  => true,

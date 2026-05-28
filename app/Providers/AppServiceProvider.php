@@ -15,12 +15,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Create SQLite database file if it doesn't exist
-        $dbPath = database_path('database.sqlite');
-        if (!file_exists($dbPath)) {
-            touch($dbPath);
-        }
-
         // @moduleEnabled('key') ... @endmoduleEnabled
         Blade::if('moduleEnabled', function (string $module) {
             return Feature::enabled($module);

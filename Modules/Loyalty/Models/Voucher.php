@@ -13,19 +13,21 @@ class Voucher extends Model
         'type',
         'value',
         'min_purchase',
-        'max_uses',
-        'uses_count',
+        'max_discount',
+        'quota',
+        'used_count',
         'is_active',
-        'starts_at',
-        'expires_at',
+        'started_at',
+        'expired_at',
     ];
 
     protected $casts = [
         'value'        => 'float',
         'min_purchase' => 'float',
+        'max_discount' => 'float',
         'is_active'    => 'boolean',
-        'starts_at'    => 'datetime',
-        'expires_at'   => 'datetime',
+        'started_at'   => 'date',
+        'expired_at'   => 'date',
     ];
 
     public function usages()
@@ -39,15 +41,15 @@ class Voucher extends Model
             return false;
         }
 
-        if ($this->expires_at && $this->expires_at->isPast()) {
+        if ($this->expired_at && $this->expired_at->isPast()) {
             return false;
         }
 
-        if ($this->starts_at && $this->starts_at->isFuture()) {
+        if ($this->started_at && $this->started_at->isFuture()) {
             return false;
         }
 
-        if ($this->max_uses && $this->uses_count >= $this->max_uses) {
+        if ($this->quota && $this->used_count >= $this->quota) {
             return false;
         }
 
