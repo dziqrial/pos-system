@@ -41,7 +41,7 @@ return new class extends Migration
 
         Schema::create('stock_movements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inventory_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('inventory_id')->constrained('inventory')->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->enum('type', ['in', 'out', 'transfer', 'adjust', 'return'])
                   ->comment('in=masuk, out=keluar, transfer=antar outlet, adjust=opname, return=retur');
