@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CoreServiceProvider extends ServiceProvider
@@ -18,11 +19,11 @@ class CoreServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'core');
 
         if (file_exists(__DIR__.'/../Routes/web.php')) {
-            $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+            Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
         }
 
         if (file_exists(__DIR__.'/../Routes/api.php')) {
-            $this->loadRoutesFrom(__DIR__.'/../Routes/api.php');
+            Route::middleware('api')->prefix('api')->group(__DIR__.'/../Routes/api.php');
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\FnB\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class FnBServiceProvider extends ServiceProvider
@@ -17,7 +18,7 @@ class FnBServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'fnb');
 
         if (file_exists(__DIR__.'/../Routes/web.php')) {
-            $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+            Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
         }
     }
 }

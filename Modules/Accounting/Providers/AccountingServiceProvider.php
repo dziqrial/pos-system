@@ -2,6 +2,7 @@
 
 namespace Modules\Accounting\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AccountingServiceProvider extends ServiceProvider
@@ -17,7 +18,7 @@ class AccountingServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'accounting');
 
         if (file_exists(__DIR__.'/../Routes/web.php')) {
-            $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+            Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
         }
     }
 }
