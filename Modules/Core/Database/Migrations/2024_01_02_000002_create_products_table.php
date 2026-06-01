@@ -100,8 +100,8 @@ return new class extends Migration
             $table->enum('status', ['available', 'sold', 'void'])->default('available');
             $table->enum('source', ['manual', 'generated', 'import'])->default('manual')
                   ->comment('Asal kode: diinput manual, di-generate sistem, atau import CSV');
-            $table->foreignId('transaction_id')->nullable()->constrained()->nullOnDelete()
-                  ->comment('Diisi saat status berubah ke sold');
+            $table->unsignedBigInteger('transaction_id')->nullable()
+                  ->comment('Diisi saat status berubah ke sold. No FK — transactions table is created later.');
             $table->foreignId('po_item_id')->nullable()->comment('Referensi dari PO jika ada');
             $table->timestamp('sold_at')->nullable();
             $table->timestamps();
