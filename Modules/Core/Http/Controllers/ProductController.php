@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 use Modules\Core\Imports\ProductImport;
 use Modules\Core\Models\Category;
 use Modules\Core\Models\Product;
@@ -227,15 +226,22 @@ class ProductController extends Controller
     public function import(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+            'file' => 'required|file|mimes:xlsx,xls,csv,ods|max:5120',
         ]);
 
-        $import = new ProductImport(auth()->user()->store_id);
+        $file      = $request->file('file');
+        $extension = strtolower($file->getClientOriginalExtension());
+        $path      = $file->getRealPath();
 
-        Excel::import($import, $request->file('file'));
+        $import = new ProductImport(auth()->user()->store_id);
+        $import->import($path, $extension);
 
         if ($import->errors) {
-            return back()->with('warning', $import->imported . ' produk berhasil diimpor. ' . count($import->errors) . ' baris gagal: ' . implode(' | ', array_slice($import->errors, 0, 5)));
+            return back()->with('warning',
+                $import->imported . ' produk berhasil diimpor. ' .
+                count($import->errors) . ' baris gagal: ' .
+                implode(' | ', array_slice($import->errors, 0, 5))
+            );
         }
 
         return redirect()->route('products.index')
