@@ -27,19 +27,13 @@ class CoreSeeder extends Seeder
         ]);
 
         // Create default categories
-        $categories = [
-            ['name' => 'Makanan',  'slug' => 'makanan',  'parent_id' => null],
-            ['name' => 'Minuman',  'slug' => 'minuman',  'parent_id' => null],
-            ['name' => 'Snack',    'slug' => 'snack',    'parent_id' => null],
-            ['name' => 'Lainnya',  'slug' => 'lainnya',  'parent_id' => null],
-        ];
+        $categories = ['Makanan', 'Minuman', 'Snack', 'Lainnya'];
 
-        foreach ($categories as $cat) {
+        foreach ($categories as $name) {
             DB::table('categories')->insert([
                 'store_id'   => $storeId,
-                'name'       => $cat['name'],
-                'slug'       => $cat['slug'],
-                'parent_id'  => $cat['parent_id'],
+                'name'       => $name,
+                'parent_id'  => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

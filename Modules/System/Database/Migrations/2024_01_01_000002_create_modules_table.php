@@ -12,8 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('key')->unique()->comment('e.g. loyalty, purchase_order, fnb');
+            $table->string('description')->nullable();
             $table->string('version')->default('1.0.0');
             $table->boolean('is_core')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
 
@@ -22,7 +24,7 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained()->cascadeOnDelete();
             $table->foreignId('module_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_enabled')->default(true);
-            $table->json('config')->nullable()->comment('Per-module config per store');
+            $table->json('settings')->nullable()->comment('Per-module config per store');
             $table->timestamp('enabled_at')->nullable();
             $table->timestamps();
 
