@@ -5,8 +5,11 @@ namespace Modules\Core\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Core\Imports\ProductImport;
 use Modules\Core\Models\Category;
 use Modules\Core\Models\Product;
 use Modules\Core\Models\ProductVariant;
@@ -205,6 +208,38 @@ class ProductController extends Controller
 
         return redirect()->route('products.edit', $product)
             ->with('success', 'Varian berhasil diperbarui.');
+    }
+
+    public function importTemplate(): Response
+    {
+        $headers = ['name', 'barcode', 'category', 'stock_type', 'price', 'cost', 'unit', 'unit_type', 'sku', 'description'];
+        $example = ['Contoh Produk', '8991234567890', 'Minuman', 'normal', '15000', '10000', 'pcs', 'pcs', '', 'Deskripsi opsional'];
+
+        $csv  = implode(',', $headers) . "\n";
+        $csv .= implode(',', $example) . "\n";
+
+        return response($csv, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="template-import-produk.csv"',
+        ]);
+    }
+
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ]);
+
+        $import = new ProductImport(auth()->user()->store_id);
+
+        Excel::import($import, $request->file('file'));
+
+        if ($import->errors) {
+            return back()->with('warning', $import->imported . ' produk berhasil diimpor. ' . count($import->errors) . ' baris gagal: ' . implode(' | ', array_slice($import->errors, 0, 5)));
+        }
+
+        return redirect()->route('products.index')
+            ->with('success', $import->imported . ' produk berhasil diimpor.');
     }
 
     /**

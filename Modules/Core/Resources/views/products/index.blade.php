@@ -6,13 +6,65 @@
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <p class="text-sm text-gray-500">{{ $products->total() }} produk ditemukan</p>
-    <a href="{{ route('products.create') }}"
-       class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        Tambah Produk
-    </a>
+    <div class="flex items-center gap-2">
+        <button type="button" onclick="document.getElementById('import-modal').classList.remove('hidden')"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+            </svg>
+            Import XLSX
+        </button>
+        <a href="{{ route('products.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Tambah Produk
+        </a>
+    </div>
+</div>
+
+<!-- Import Modal -->
+<div id="import-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-semibold text-gray-800">Import Produk dari XLSX / CSV</h3>
+            <button type="button" onclick="document.getElementById('import-modal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+        </div>
+
+        <p class="text-sm text-gray-500 mb-4">
+            Upload file XLSX atau CSV dengan kolom:
+            <span class="font-mono text-xs bg-gray-100 px-1 rounded">name, barcode, category, stock_type, price, cost, unit, unit_type, sku, description</span>
+        </p>
+
+        <a href="{{ route('products.import.template') }}"
+           class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Download template CSV
+        </a>
+
+        <form method="POST" action="{{ route('products.import') }}" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Pilih File <span class="text-red-500">*</span></label>
+                <input type="file" name="file" accept=".xlsx,.xls,.csv" required
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                <p class="text-xs text-gray-400 mt-1">Maks. 5 MB. Format: .xlsx, .xls, .csv</p>
+            </div>
+            <div class="flex gap-3 pt-1">
+                <button type="submit" class="px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700">
+                    Upload &amp; Import
+                </button>
+                <button type="button" onclick="document.getElementById('import-modal').classList.add('hidden')"
+                        class="px-5 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200">
+                    Batal
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Filter -->

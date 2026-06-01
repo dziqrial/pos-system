@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
 
     // --- Products & Variants ---
     Route::resource('products', ProductController::class);
+    Route::get('/products/import/template', [ProductController::class, 'importTemplate'])->name('products.import.template');
+    Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::post('/products/{product}/variants', [ProductController::class, 'storeVariant'])->name('products.variants.store');
     Route::put('/products/{product}/variants/{variant}', [ProductController::class, 'updateVariant'])->name('products.variants.update');
     Route::delete('/products/{product}/variants/{variant}', [ProductController::class, 'destroyVariant'])->name('products.variants.destroy');
@@ -57,4 +59,5 @@ Route::middleware('auth')->group(function () {
 
     // --- Reports ---
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export/pdf', [ReportController::class, 'exportPdf'])->name('reports.export.pdf');
 });
